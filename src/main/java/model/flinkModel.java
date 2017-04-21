@@ -61,7 +61,7 @@ public class flinkModel {
 		for (Object object2 : fileInfo.keySet()) {
 			flink.eq(object2.toString(), fileInfo.get(object2.toString()));
 		}
-		return flink.select();
+		return flink.limit(10).select();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -99,7 +99,7 @@ public class flinkModel {
 		return flink.eq("_id", new ObjectId(mid)).find();
 	}
 	public JSONArray FindByWBID(String wbid){
-		return flink.eq("wbid", wbid).select();
+		return flink.eq("wbid", wbid).limit(20).select();
 	}
 
 	@SuppressWarnings("unchecked")
