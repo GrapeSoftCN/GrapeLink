@@ -8,28 +8,28 @@ import esayhelper.JSONHelper;
 import esayhelper.TimeHelper;
 import model.flinkModel;
 
-
 public class flink {
 	private flinkModel model = new flinkModel();
 	private HashMap<String, Object> map = new HashMap<>();
 	private JSONObject _obj = new JSONObject();
-	
-	public flink(){
+
+	public flink() {
 		map.put("logo", "");
 		map.put("desp", "");
 		map.put("email", "");
-		map.put("time", TimeHelper.nowMillis()+"");
+		map.put("time", TimeHelper.nowMillis() + "");
 	}
+
 	@SuppressWarnings("unchecked")
 	public String flinkAdd(String info) {
 		JSONObject object = model.AddMap(map, JSONHelper.string2json(info));
 		_obj.put("records", model.addlink(object));
 		return model.resultMessage(0, _obj.toString());
 	}
-//修改友链
+
+	// 修改友链
 	public String UpdateFlink(String mid, String msgInfo) {
-		return model.resultMessage(model.updateflink(mid, JSONHelper.string2json(msgInfo)),
-				"友链修改成功");
+		return model.resultMessage(model.updateflink(mid, JSONHelper.string2json(msgInfo)), "友链修改成功");
 	}
 
 	// 删除友链
@@ -63,4 +63,10 @@ public class flink {
 		return model.resultMessage(0, _obj.toString());
 	}
 
+	//查询所属某个网站的flink
+	@SuppressWarnings("unchecked")
+	public String findLink(String wbid) {
+		_obj.put("records", model.FindByWBID(wbid));
+		return model.resultMessage(0, _obj.toString());
+	}
 }

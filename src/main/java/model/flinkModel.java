@@ -98,6 +98,9 @@ public class flinkModel {
 	public JSONObject FindByID(String mid) {
 		return flink.eq("_id", new ObjectId(mid)).find();
 	}
+	public JSONArray FindByWBID(String wbid){
+		return flink.eq("wbid", wbid).select();
+	}
 
 	@SuppressWarnings("unchecked")
 	public boolean checkEmail(String email) {
