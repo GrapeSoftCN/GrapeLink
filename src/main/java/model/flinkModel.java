@@ -54,7 +54,7 @@ public class flinkModel {
 		for (int i = 0; i < mids.length; i++) {
 			flink.eq("_id", new ObjectId(mids[i]));
 		}
-		return flink.deleteAll() != mids.length ? 0 : 99;
+		return flink.deleteAll() == mids.length ? 0 : 99;
 	}
 
 	public JSONArray find(JSONObject fileInfo) {
