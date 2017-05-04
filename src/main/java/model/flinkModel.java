@@ -17,6 +17,8 @@ import esayhelper.formHelper.formdef;
 public class flinkModel {
 	private static DBHelper flink;
 	private static formHelper _form;
+	private JSONObject _obj = new JSONObject();
+	
 	static {
 		flink = new DBHelper("mongodb", "flink");
 		_form = flink.getChecker();
@@ -130,6 +132,16 @@ public class flinkModel {
 		return object;
 	}
 
+	@SuppressWarnings("unchecked")
+	public String resultMessage(JSONObject object) {
+		_obj.put("records", object);
+		return resultMessage(0, _obj.toString());
+	}
+	@SuppressWarnings("unchecked")
+	public String resultMessage(JSONArray array) {
+		_obj.put("records", array);
+		return resultMessage(0, _obj.toString());
+	}
 	public String resultMessage(int num, String message) {
 		String msg = "";
 		switch (num) {
@@ -141,6 +153,15 @@ public class flinkModel {
 			break;
 		case 2:
 			msg = "email格式错误";
+			break;
+		case 3:
+			msg = "没有创建数据权限，请联系管理员进行权限调整";
+			break;
+		case 4:
+			msg = "没有修改数据权限，请联系管理员进行权限调整";
+			break;
+		case 5:
+			msg = "没有删除数据权限，请联系管理员进行权限调整";
 			break;
 		default:
 			msg = "其它异常";
