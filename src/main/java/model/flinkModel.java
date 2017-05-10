@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import apps.appsProxy;
 import esayhelper.DBHelper;
 import esayhelper.formHelper;
 import esayhelper.jGrapeFW_Message;
@@ -20,6 +21,8 @@ public class flinkModel {
 	private JSONObject _obj = new JSONObject();
 	
 	static {
+//		JSONObject object = appsProxy.configValue();
+//		flink = new DBHelper(object.get("db").toString(), "flink");
 		flink = new DBHelper("mongodb", "flink");
 		_form = flink.getChecker();
 	}
