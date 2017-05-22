@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import apps.appsProxy;
+import database.db;
 import esayhelper.DBHelper;
 import esayhelper.formHelper;
 import esayhelper.jGrapeFW_Message;
@@ -19,14 +20,16 @@ public class flinkModel {
 	private static DBHelper flink;
 	private static formHelper _form;
 	private JSONObject _obj = new JSONObject();
-	
+
 	static {
-//		JSONObject object = appsProxy.configValue();
-//		flink = new DBHelper(object.get("db").toString(), "flink");
-		flink = new DBHelper("mongodb", "flink");
+		flink = new DBHelper(appsProxy.configValue().get("db").toString(),
+				"flink");
 		_form = flink.getChecker();
 	}
 
+	private db bind(){
+		return flink.bind(String.valueOf(appsProxy.appid()));
+	}
 	public flinkModel() {
 		_form.putRule("name", formdef.notNull);
 		_form.putRule("url", formdef.notNull);
@@ -42,38 +45,40 @@ public class flinkModel {
 				return resultMessage(2, ""); // email格式错误
 			}
 		}
-		String info = flink.data(object).insertOnce().toString();
+		String info = bind().data(object).insertOnce().toString();
 		return FindByID(info).toString();
 	}
 
 	public int updateflink(String mid, JSONObject object) {
-		return flink.eq("_id", new ObjectId(mid)).data(object).update() != null ? 0 : 99;
+		return bind().eq("_id", new ObjectId(mid)).data(object).update() != null
+				? 0 : 99;
 	}
 
 	public int deleteflink(String mid) {
-		return flink.eq("_id", new ObjectId(mid)).delete() != null ? 0 : 99;
+		return bind().eq("_id", new ObjectId(mid)).delete() != null ? 0 : 99;
 	}
 
 	public int deleteflink(String[] mids) {
-		flink.or();
+		bind().or();
 		for (int i = 0; i < mids.length; i++) {
-			flink.eq("_id", new ObjectId(mids[i]));
+			bind().eq("_id", new ObjectId(mids[i]));
 		}
-		return flink.deleteAll() == mids.length ? 0 : 99;
+		return bind().deleteAll() == mids.length ? 0 : 99;
 	}
 
 	public JSONArray find(JSONObject fileInfo) {
 		for (Object object2 : fileInfo.keySet()) {
-			flink.eq(object2.toString(), fileInfo.get(object2.toString()));
+			bind().eq(object2.toString(), fileInfo.get(object2.toString()));
 		}
-		return flink.limit(10).select();
+		return bind().limit(10).select();
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject page(int idx, int pageSize) {
-		JSONArray array = flink.page(idx, pageSize);
+		JSONArray array = bind().page(idx, pageSize);
 		JSONObject object = new JSONObject();
-		object.put("totalSize", (int) Math.ceil((double) flink.count() / pageSize));
+		object.put("totalSize",
+				(int) Math.ceil((double) bind().count() / pageSize));
 		object.put("currentPage", idx);
 		object.put("pageSize", pageSize);
 		object.put("data", array);
@@ -83,11 +88,12 @@ public class flinkModel {
 	@SuppressWarnings("unchecked")
 	public JSONObject page(int idx, int pageSize, JSONObject Info) {
 		for (Object object2 : Info.keySet()) {
-			flink.eq(object2.toString(), Info.get(object2.toString()));
+			bind().eq(object2.toString(), Info.get(object2.toString()));
 		}
-		JSONArray array = flink.page(idx, pageSize);
+		JSONArray array = bind().dirty().page(idx, pageSize);
 		JSONObject object = new JSONObject();
-		object.put("totalSize", (int) Math.ceil((double) flink.count() / pageSize));
+		object.put("totalSize",
+				(int) Math.ceil((double) bind().count() / pageSize));
 		object.put("currentPage", idx);
 		object.put("pageSize", pageSize);
 		object.put("data", array);
@@ -101,10 +107,11 @@ public class flinkModel {
 	 * @return
 	 */
 	public JSONObject FindByID(String mid) {
-		return flink.eq("_id", new ObjectId(mid)).find();
+		return bind().eq("_id", new ObjectId(mid)).find();
 	}
-	public JSONArray FindByWBID(String wbid){
-		return flink.eq("wbid", wbid).limit(20).select();
+
+	public JSONArray FindByWBID(String wbid) {
+		return bind().eq("wbid", wbid).limit(20).select();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,6 +121,7 @@ public class flinkModel {
 		_obj.put("email", email);
 		return _form.checkRule(_obj);
 	}
+
 	/**
 	 * 将map添加至JSONObject中
 	 * 
@@ -124,9 +132,11 @@ public class flinkModel {
 	@SuppressWarnings("unchecked")
 	public JSONObject AddMap(HashMap<String, Object> map, JSONObject object) {
 		if (map.entrySet() != null) {
-			Iterator<Entry<String, Object>> iterator = map.entrySet().iterator();
+			Iterator<Entry<String, Object>> iterator = map.entrySet()
+					.iterator();
 			while (iterator.hasNext()) {
-				Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
+				Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator
+						.next();
 				if (!object.containsKey(entry.getKey())) {
 					object.put(entry.getKey(), entry.getValue());
 				}
@@ -140,11 +150,13 @@ public class flinkModel {
 		_obj.put("records", object);
 		return resultMessage(0, _obj.toString());
 	}
+
 	@SuppressWarnings("unchecked")
 	public String resultMessage(JSONArray array) {
 		_obj.put("records", array);
 		return resultMessage(0, _obj.toString());
 	}
+
 	public String resultMessage(int num, String message) {
 		String msg = "";
 		switch (num) {

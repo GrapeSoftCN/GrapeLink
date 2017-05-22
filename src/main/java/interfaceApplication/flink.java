@@ -7,7 +7,6 @@ import org.json.simple.JSONObject;
 import esayhelper.JSONHelper;
 import esayhelper.TimeHelper;
 import model.flinkModel;
-import rpc.execRequest;
 
 public class flink {
 	private flinkModel model = new flinkModel();
