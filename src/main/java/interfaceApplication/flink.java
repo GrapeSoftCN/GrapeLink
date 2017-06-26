@@ -7,20 +7,29 @@ import org.json.simple.JSONObject;
 import esayhelper.JSONHelper;
 import esayhelper.TimeHelper;
 import model.flinkModel;
+import rpc.execRequest;
+import session.session;
 
 public class flink {
 	private flinkModel model = new flinkModel();
 	private HashMap<String, Object> map = new HashMap<>();
+	private static session session = new session();
 
 	public flink() {
-
+		JSONObject userInfo = new JSONObject();
+		String sid = (String) execRequest.getChannelValue("sid");
+		if (sid != null) {
+			userInfo = session.getSession(sid);
+		}
 		map.put("logo", "");
 		map.put("desp", "");
 		map.put("email", "");
-		map.put("rplv", 1000);
-		map.put("uplv", 2000);
-		map.put("dplv", 3000);
+		map.put("r", 1000);
+		map.put("u", 2000);
+		map.put("d", 3000);
+		map.put("fatherid", "0");
 		map.put("time", TimeHelper.nowMillis() + "");
+		map.put("wbid", (userInfo !=null && userInfo.size() != 0 )? userInfo.get("currentWeb") : "");
 	}
 
 	public String flinkAdd(String info) {
@@ -83,5 +92,9 @@ public class flink {
 	// 查询所属某个网站的flink
 	public String findLink(String wbid) {
 		return model.FindByWBID(wbid);
+	}
+	//设置父对象
+	public String SetFather(String id,String fid) {
+		return model.set(id, fid);
 	}
 }

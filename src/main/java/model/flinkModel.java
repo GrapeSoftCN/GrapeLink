@@ -10,11 +10,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import apps.appsProxy;
+import check.formHelper;
+import check.formHelper.formdef;
+import database.DBHelper;
 import database.db;
-import esayhelper.DBHelper;
-import esayhelper.formHelper;
 import esayhelper.jGrapeFW_Message;
-import esayhelper.formHelper.formdef;
 import nlogger.nlogger;
 
 public class flinkModel {
@@ -33,7 +33,7 @@ public class flinkModel {
 
 	public flinkModel() {
 		_form.putRule("name", formdef.notNull);
-		_form.putRule("url", formdef.notNull);
+//		_form.putRule("url", formdef.notNull);
 	}
 
 	public String addlink(JSONObject object) {
@@ -44,7 +44,7 @@ public class flinkModel {
 			}
 			if (object.containsKey("email")) {
 				String email = object.get("email").toString();
-				if (!checkEmail(email)) {
+				if (!("").equals(email) && !checkEmail(email)) {
 					return resultMessage(2); // email格式错误
 				}
 			}
@@ -92,7 +92,7 @@ public class flinkModel {
 				array = null;
 			}
 		}
-		return resultMessage(array);  
+		return resultMessage(array);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -162,6 +162,13 @@ public class flinkModel {
 		JSONObject _obj = new JSONObject();
 		_obj.put("email", email);
 		return _form.checkRule(_obj);
+	}
+
+	public String set(String id, String fid) {
+		int code = 99;
+		String string = "{\"fatherid\":\"" + fid + "\"}";
+		code = bind().eq("_id", new ObjectId(id)).data(string).update() != null ? 0 : 99;
+		return resultMessage(code, "设置父链接成功");
 	}
 
 	/**
