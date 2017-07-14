@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 
-import esayhelper.JSONHelper;
-import esayhelper.TimeHelper;
+import json.JSONHelper;
 import model.flinkModel;
 import rpc.execRequest;
 import session.session;
+import time.TimeHelper;
 
 public class flink {
 	private flinkModel model = new flinkModel();
@@ -33,39 +33,17 @@ public class flink {
 	}
 
 	public String flinkAdd(String info) {
-		// // 该用户是否拥有新增权限
-		// String tip = execRequest
-		// ._run("GrapeAuth/Auth/InsertPLV/s:" + userid, null).toString();
-		// if (!"0".equals(tip)) {
-		// return model.resultMessage(3, "");
-		// }
 		JSONObject object = model.AddMap(map, JSONHelper.string2json(info));
 		return model.addlink(object);
 	}
 
 	// 修改友链
 	public String UpdateFlink(String mid, String msgInfo) {
-		// String uPLV = model.FindByID(mid).get("uplv").toString();
-		// String tip = execRequest
-		// ._run("GrapeAuth/Auth/UpdatePLV/s:" + uPLV + "/s:" + userid,
-		// null)
-		// .toString();
-		// if (!"0".equals(tip)) {
-		// return model.resultMessage(4, "没有编辑权限");
-		// }
 		return model.updateflink(mid, JSONHelper.string2json(msgInfo));
 	}
 
 	// 删除友链
 	public String DeleteFlink(String mid) {
-		// String dPLV = model.FindByID(mid).get("dplv").toString();
-		// String tip = execRequest
-		// ._run("GrapeAuth/Auth/UpdatePLV/s:" + dPLV + "/s:" + userid,
-		// null)
-		// .toString();
-		// if (!"0".equals(tip)) {
-		// return model.resultMessage(5, "没有删除权限");
-		// }
 		return model.deleteflink(mid);
 	}
 

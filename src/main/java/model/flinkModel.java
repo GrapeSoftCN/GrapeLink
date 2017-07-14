@@ -9,13 +9,14 @@ import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import JGrapeSystem.jGrapeFW_Message;
 import apps.appsProxy;
 import check.formHelper;
 import check.formHelper.formdef;
 import database.DBHelper;
 import database.db;
-import esayhelper.jGrapeFW_Message;
 import nlogger.nlogger;
+import security.codec;
 
 public class flinkModel {
 	private static DBHelper flink;
@@ -33,11 +34,12 @@ public class flinkModel {
 
 	public flinkModel() {
 		_form.putRule("name", formdef.notNull);
-//		_form.putRule("url", formdef.notNull);
+		// _form.putRule("url", formdef.notNull);
 	}
 
 	public String addlink(JSONObject object) {
 		String info = "";
+		String url;
 		if (object != null) {
 			if (!_form.checkRuleEx(object)) {
 				return resultMessage(1); // 必填字段没有填
@@ -47,6 +49,10 @@ public class flinkModel {
 				if (!("").equals(email) && !checkEmail(email)) {
 					return resultMessage(2); // email格式错误
 				}
+			}
+			if (object.containsKey("url")) {
+				url = object.getString("url");
+				object.puts("url", url.equals("") ? "" : codec.DecodeHtmlTag(url));
 			}
 			info = bind().data(object).insertOnce().toString();
 		}
@@ -58,6 +64,11 @@ public class flinkModel {
 	}
 
 	public String updateflink(String mid, JSONObject object) {
+		String url;
+		if (object.containsKey("url")) {
+			url = object.getString("url");
+			object.puts("url", url.equals("") ? "" : codec.DecodeHtmlTag(url));
+		}
 		JSONObject obj = bind().eq("_id", new ObjectId(mid)).data(object).update();
 		return obj != null ? resultMessage(0, "修改成功") : resultMessage(99);
 	}
@@ -122,6 +133,7 @@ public class flinkModel {
 			}
 			JSONArray array = bind().dirty().page(idx, pageSize);
 			object.put("totalSize", (int) Math.ceil((double) bind().count() / pageSize));
+			bind().clear();
 			object.put("currentPage", idx);
 			object.put("pageSize", pageSize);
 			object.put("data", array);
