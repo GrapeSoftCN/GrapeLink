@@ -13,7 +13,7 @@ import time.TimeHelper;
 public class flink {
 	private flinkModel model = new flinkModel();
 	private HashMap<String, Object> map = new HashMap<>();
-	private static session session = new session();
+	private session session = new session();
 
 	public flink() {
 		JSONObject userInfo = new JSONObject();

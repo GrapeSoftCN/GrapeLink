@@ -19,20 +19,17 @@ import nlogger.nlogger;
 import security.codec;
 
 public class flinkModel {
-	private static DBHelper flink;
-	private static formHelper _form;
+	private DBHelper flink;
+	private formHelper _form;
 	private JSONObject _obj = new JSONObject();
-
-	static {
-		flink = new DBHelper(appsProxy.configValue().get("db").toString(), "flink");
-		_form = flink.getChecker();
-	}
 
 	private db bind() {
 		return flink.bind(String.valueOf(appsProxy.appid()));
 	}
 
 	public flinkModel() {
+		flink = new DBHelper(appsProxy.configValue().get("db").toString(), "flink");
+		_form = flink.getChecker();
 		_form.putRule("name", formdef.notNull);
 		// _form.putRule("url", formdef.notNull);
 	}
